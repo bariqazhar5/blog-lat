@@ -24,7 +24,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           # Menyalin file dari GitHub ke EC2 menggunakan SCP
-          scp -i /tmp/key_bariq.pem -r ./path/to/your/website/* ec2-user@<EC2_PUBLIC_IP>:/usr/share/nginx/html/
+          scp -i /tmp/key_bariq.pem -r ./path/to/your/website/* ec2-user@54.254.153.93:/usr/share/nginx/html/
 
           # Restart Nginx setelah file di-upload
           ssh -i /tmp/key_bariq.pem ec2-user@<EC2_PUBLIC_IP> << 'EOF'
