@@ -1,0 +1,34 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code dari repository GitHub
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Setup SSH untuk koneksi ke EC2
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Step 3: Deploy aplikasi ke EC2
+      - name: Deploy to EC2
+        run: |
+          # Menyalin file dari GitHub ke EC2 menggunakan SCP
+          scp -i /tmp/key_bariq.pem -r ./path/to/your/website/* ec2-user@<EC2_PUBLIC_IP>:/usr/share/nginx/html/
+
+          # Restart Nginx setelah file di-upload
+          ssh -i /tmp/key_bariq.pem ec2-user@<EC2_PUBLIC_IP> << 'EOF'
+            sudo systemctl restart nginx
+          EOF
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
